@@ -28,16 +28,6 @@ class PublishEventToAll {
   async perform(params) {
     const oThis = this;
 
-    if (!params['topics']) {
-      return Promise.resolve(
-        responseHelper.error({
-          internal_error_identifier: 's_rp_a_1',
-          api_error_identifier: 'invalid_topics',
-          error_config: errorConfig,
-          debug_options: {}
-        })
-      );
-    }
     if (!params['message']) {
       return Promise.resolve(
         responseHelper.error({
