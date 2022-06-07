@@ -57,12 +57,6 @@ PLG Works Queue exposes following 3 methods:
 
 <br>
 
-- `queueManagerInstance.subscribeEvent.local( topics, readCallback)`
-  - <b>topics</b> [Array] (mandatory) - List of events to subscribe to.
-  - <b>readCallback</b> [function] (mandatory) - Callback method will be invoked whenever there is a new notification.
-
-<br>
-
 - `queueManagerInstance.publishEvent.perform(params)`
   - <b>params</b> [object] (mandatory)
     - <b>topics</b> [Array] (optional) List of topic messages to publish.
@@ -187,34 +181,7 @@ const subscribeMultiple = async function() {
 subscribeMultiple();
 ```
 
-#### 3. Subscribe to local events published through EventEmitter:
-  
-```js
-// Config Strategy for PLG Works Queue.
-configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "enableRabbitmq": 0
-    }
-};
-
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
-const subscribeLocal = async function() {
-  let queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  queueManagerInstance.subscribeEvent.local(["event.PublicTestLocalEvent"], 
-  function(msgContent){
-    console.log('Consumed message -> ', msgContent)
-  });
-  };
-subscribeLocal();
-```
-
-#### 4. Publish Notifications:
+#### 3. Publish Notifications:
 
 - All events are by default published using EventEmitter and if configured, through RabbitMQ as well.
 
@@ -253,7 +220,7 @@ const publish = async function() {
 publish();
 ```
 
-#### 5. Pause and Restart queue consumption:
+#### 4. Pause and Restart queue consumption:
 
 - We also support pause and start queue consumption. According to your logical condition, you can fire below events from your process to cancel or restart consumption respectively.
 
