@@ -71,9 +71,9 @@ const queueManagerInstance = await QueueManager.getInstance(configStrategy);
       - <b>kind</b> [string] (mandatory) Kind of the message.
       - <b>payload</b> [object] (optional) Payload to identify message and extra info.
 
-## Examples:
+## Examples
 
-### Subscribe to events published through RabbitMQ:
+### Subscribe to events published through RabbitMQ
   
 ```js
 // Config Strategy for PLG Works Queue.
@@ -153,7 +153,7 @@ process.on('rmq_error', rmqError);
 subscribe();
 ```
 
-### Listen to multiple events with one subscriber.
+### Listen to multiple events with one subscriber
 
 ```js
 // Config Strategy for PLG Works Queue.
@@ -182,9 +182,9 @@ const subscribeMultiple = async function() {
 subscribeMultiple();
 ```
 
-### Publish Notifications:
+### Publish Notifications
 
-- All events are by default published using EventEmitter and if configured, through RabbitMQ as well.
+All events are by default published using EventEmitter and if configured, through RabbitMQ as well.
 
 ```js
 // Config Strategy for PLG Works Queue.
@@ -221,9 +221,9 @@ const publish = async function() {
 publish();
 ```
 
-### Pause and Restart queue consumption:
+### Pause and Restart queue consumption
 
-- We also support pause and start queue consumption. According to your logical condition, you can fire below events 
+We also support pause and start queue consumption. According to your logical condition, you can fire below events 
 from your process to pause or restart consumption respectively. Pausing consumption can be the first step in SIGINT handling.
 
 ```js
