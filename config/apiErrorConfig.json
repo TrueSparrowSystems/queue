@@ -1,0 +1,87 @@
+{
+  "invalid_params": {
+    "http_code": "422",
+    "code": "invalid_params",
+    "message": "At least one or more of the input params are invalid"
+  },
+  "invalid_notification_params": {
+    "http_code": "422",
+    "code": "invalid_notification_params",
+    "message": "At least one or more of the input notification params are invalid"
+  },
+  "invalid_message_params": {
+    "http_code": "422",
+    "code": "invalid_message_params",
+    "message": "At least one or more of the input message params are invalid"
+  },
+  "invalid_payload_for_received_event": {
+    "http_code": "422",
+    "code": "invalid_payload_for_received_event",
+    "message": "Invalid payload for the event received"
+  },
+  "invalid_payload_transaction_init": {
+    "http_code": "422",
+    "code": "invalid_payload_transaction_init",
+    "message": "Invalid payload for kind transaction initiated"
+  },
+  "invalid_payload_for_email": {
+    "http_code": "422",
+    "code": "invalid_payload_for_email",
+    "message": "Invalid payload for kind email"
+  },
+  "invalid_payload_shared_entity": {
+    "http_code": "422",
+    "code": "invalid_payload_shared_entity",
+    "message": "Invalid payload for kind shared entity"
+  },
+  "invalid_payload_exec_transaction": {
+    "http_code": "422",
+    "code": "invalid_payload_exec_transaction",
+    "message": "Invalid payload for kind execute transaction"
+  },
+  "unsupported_message_kind": {
+    "http_code": "422",
+    "code": "unsupported_message_kind",
+    "message": "Unsupported message kind. Supported are event_received,transaction_initiated,transaction_mined"
+  },
+  "cannot_create_channel": {
+    "http_code": "422",
+    "code": "cannot_create_channel",
+    "message": "Can't create channel in the queue"
+  },
+  "no_rmq_connection": {
+    "http_code": "422",
+    "code": "no_rmq_connection",
+    "message": "No rabbitmq connection found"
+  },
+  "invalid_payload_for_holdWorker": {
+    "http_code": "422",
+    "code": "invalid_payload_for_holdWorker",
+    "message": "Invalid payload for kind hold worker"
+  },
+  "invalid_payload_for_redirectToDhq": {
+    "http_code": "422",
+    "code": "invalid_payload_for_redirectToDhq",
+    "message": "Invalid payload for kind redirect to Dhq"
+  },
+  "invalid_payload_for_transactionsDone": {
+    "http_code": "422",
+    "code": "invalid_payload_for_transactionsDone",
+    "message": "Invalid payload for kind transactions done"
+  },
+  "invalid_payload_for_command_message": {
+    "http_code": "422",
+    "code": "invalid_payload_for_command_message",
+    "message": "Invalid payload for the command message"
+  },
+  "unsupported_command_message_kind": {
+    "http_code": "422",
+    "code": "unsupported_command_message_kind",
+    "message": "Unsupported command message kind"
+  },
+  "invalid_topics": {
+    "http_code": "422",
+    "code": "invalid_topics_passed",
+    "message": "invalid topics passed"
+  }
+}
