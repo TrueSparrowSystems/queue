@@ -223,7 +223,8 @@ publish();
 
 ### Pause and Restart queue consumption:
 
-- We also support pause and start queue consumption. According to your logical condition, you can fire below events from your process to cancel or restart consumption respectively.
+- We also support pause and start queue consumption. According to your logical condition, you can fire below events 
+from your process to pause or restart consumption respectively. Pausing consumption can be the first step in SIGINT handling.
 
 ```js
 
