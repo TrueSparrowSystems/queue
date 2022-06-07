@@ -2,29 +2,34 @@
 
 ![npm version](https://img.shields.io/npm/v/@plgworks/queue.svg?style=flat)
 
-PLG Works Queue helps with managing subscription and publish critical events using EventEmitter and RabbitMQ. All events get published using node EventEmitter and, if configured, events are also published through RabbitMQ, using topic-based exchange.
+PLG Works Queue helps with managing subscription and publish critical events using RabbitMQ. All events are published through RabbitMQ, using topic-based exchange.
 
-## Install
+## Prerequisites
+- Basic understanding of RabbitMQ - [reference](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
+
+## Installation
 
 ```bash
 npm install @plgworks/queue --save
 ```
 
 ## Initialize
-While using this package initialize an instance of queue manager to use to publish an event or subscribe to an event(s). To initialize an instance RabbitMQ configuration is required. Using this instance various functional methods can be invoked. The configuration should include following parameters:
-- <b>username</b> [string] (mandatory)
-- <b>password</b> [string] (mandatory)
-- <b>host</b> [string] (mandatory)
-- <b>port</b> [string] (mandatory)
-- <b>heartbeats</b> [string] (mandatory) heartbeats defines after what period of time the peer TCP connection should be considered unreachable.
-- <b>clusterNodes</b> [Array] (mandatory) - List of RMQ hosts.
+RabbitMQ configuration is needed in initialization of the package. The configuration should include following parameters:
+- <b>username</b> [string] (mandatory) RabbitMQ connection credentials
+- <b>password</b> [string] (mandatory) RabbitMQ connection credentials
+- <b>host</b> [string] (mandatory) RabbitMQ host
+- <b>port</b> [string] (mandatory) RabbitMQ port
+- <b>heartbeats</b> [string] (mandatory) [heartbeats](https://www.rabbitmq.com/heartbeats.html) defines after what period of time the peer TCP connection should be considered unreachable.
+- <b>clusterNodes</b> [Array] (mandatory) - List of [RMQ cluster](https://www.rabbitmq.com/clustering.html#node-names) hosts.
 - <b>enableRabbitmq</b> [integer] (optional) 0 if local usage.
 - <b>switchHostAfterSec</b> [integer] (optional) Wait time before switching RMQ host.
 - <b>connectionTimeoutSec</b> [integer] (optional) Wait time for connection to establish.
 
-Example snippet to initialize PLG Works queue manager.
-
+Following snippet initializes PLG Works Queue Manager:
 ```js
+// Import the queue module.
+const QueueManager = require('@plgworks/queue');
+
 // Config Strategy for PLG Works Queue.
 configStrategy = {
 	"rabbitmq": {
@@ -36,18 +41,17 @@ configStrategy = {
         "enableRabbitmq": 1
     }
 };
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
+
+// Create instance
 const queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  ```
+```
 
-
-## Methods
-PLG Works Queue exposes following 3 methods:
-
+## queueManagerInstance Object Methods
 - `queueManagerInstance.subscribeEvent.rabbit(topics, options, readCallback, subscribeCallback)`
+<br>Description: Subscribe to multiple topics over a queue.
+<br>Parameters:
   - <b>topics</b> [Array] (mandatory) - List of events to subscribe to.
-  - <b>options</b> [object] (mandatory) - 
+  - <b>options</b> [object] (mandatory) Object with following keys:
     - <b>queue</b> [string] (optional) - Name of the queue on which you want to receive all your subscribed events. These queues and events, published in them, have TTL of 6 days. If a queue name is not passed, a queue with a unique name is created and is deleted when the subscriber gets disconnected.
     - <b>ackRequired</b> [integer] (optional) - The delivered message needs ack if passed 1 ( default 0 ). if 1 passed and ack not done, message will redeliver.
     - <b>broadcastSubscription</b> [integer] (optional) -  Set to 1, when queue needs to be subscribed to broadcasting events.
@@ -55,24 +59,21 @@ PLG Works Queue exposes following 3 methods:
   - <b>readCallback</b> [function] (mandatory) - Callback method will be invoked whenever there is a new notification.
   - <b>subscribeCallback</b> [function] (optional) - Callback method to return consumerTag.
 
-<br>
-
 - `queueManagerInstance.publishEvent.perform(params)`
-  - <b>params</b> [object] (mandatory)
+<br>Description: Publish event to topics.
+<br>Parameters:
+  - <b>params</b> [object] (mandatory) Object with following keys:
     - <b>topics</b> [Array] (optional) List of topic messages to publish.
     - <b>broadcast</b> [integer] (optional) When set to 1 message will be broadcasted to all channels. Default value is 0.
     - <b>publishAfter</b> [integer] (optional) Message to be sent after milliseconds.
     - <b>publisher</b> [string] (mandatory) Name of publisher
-    - <b>message</b> [object] (mandatory)
-      - <b>kind</b> [string] (madatory) Kind of the message.
+    - <b>message</b> [object] (mandatory) Object with following keys:
+      - <b>kind</b> [string] (mandatory) Kind of the message.
       - <b>payload</b> [object] (optional) Payload to identify message and extra info.
-  
-  <br>
-
 
 ## Examples:
 
-#### 1. Subscribe to events published through RabbitMQ:
+### Subscribe to events published through RabbitMQ:
   
 ```js
 // Config Strategy for PLG Works Queue.
@@ -152,7 +153,7 @@ process.on('rmq_error', rmqError);
 subscribe();
 ```
 
-#### 2. Listen to multiple events with one subscriber.
+### Listen to multiple events with one subscriber.
 
 ```js
 // Config Strategy for PLG Works Queue.
@@ -181,7 +182,7 @@ const subscribeMultiple = async function() {
 subscribeMultiple();
 ```
 
-#### 3. Publish Notifications:
+### Publish Notifications:
 
 - All events are by default published using EventEmitter and if configured, through RabbitMQ as well.
 
@@ -220,7 +221,7 @@ const publish = async function() {
 publish();
 ```
 
-#### 4. Pause and Restart queue consumption:
+### Pause and Restart queue consumption:
 
 - We also support pause and start queue consumption. According to your logical condition, you can fire below events from your process to cancel or restart consumption respectively.
 
@@ -264,7 +265,6 @@ const subscribePauseRestartConsume = async function() {
   };
 subscribePauseRestartConsume();
 ```
-
 
 ## Running test cases
 Run following command to execute test cases.

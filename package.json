@@ -1,6 +1,6 @@
 {
   "name": "@plgworks/queue",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Queue helps publish critical events using EventEmitter and RabbitMQ.",
   "main": "index.js",
   "scripts": {
