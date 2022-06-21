@@ -1,6 +1,6 @@
 {
   "name": "@plgworks/queue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Queue helps publish critical events using EventEmitter and RabbitMQ.",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "PubSub"
   ],
   "author": "PLG Works",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/PLG-Works/queue/issues"
   },
