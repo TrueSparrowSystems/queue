@@ -2,136 +2,160 @@
 
 ![npm version](https://img.shields.io/npm/v/@plgworks/queue.svg?style=flat)
 
-PLG Works Queue helps with managing subscription and publish critical events using RabbitMQ. All events are published through RabbitMQ, using topic-based exchange.
+PLG Works Queue helps in publishing and subscribing tasks over [RabbitMQ](https://www.rabbitmq.com/). Internally it uses topic-based exchange.
+
+One use-case is to publish tasks for asynchronous processing. For example, **API worker process** can publish tasks which will be taken up by **asynchronous worker processes** which have subscribed for such tasks.
 
 ## Prerequisites
-- Basic understanding of RabbitMQ - [reference](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
+- [RabbitMQ](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
 
-## Installation
+## Install
 
 ```bash
 npm install @plgworks/queue --save
 ```
 
 ## Initialize
-RabbitMQ configuration is needed in initialization of the package. The configuration should include following parameters:
-- <b>username</b> [string] (mandatory) RabbitMQ connection credentials
-- <b>password</b> [string] (mandatory) RabbitMQ connection credentials
-- <b>host</b> [string] (mandatory) RabbitMQ host
-- <b>port</b> [string] (mandatory) RabbitMQ port
-- <b>heartbeats</b> [string] (mandatory) [heartbeats](https://www.rabbitmq.com/heartbeats.html) defines after what period of time the peer TCP connection should be considered unreachable.
-- <b>clusterNodes</b> [Array] (mandatory) - List of [RMQ cluster](https://www.rabbitmq.com/clustering.html#node-names) hosts.
-- <b>enableRabbitmq</b> [integer] (optional) 0 if local usage.
-- <b>switchHostAfterSec</b> [integer] (optional) Wait time before switching RMQ host.
-- <b>connectionTimeoutSec</b> [integer] (optional) Wait time for connection to establish.
+`configStrategy` is passed to initialize PLG Works Queue. `configStrategy` is an object with `rabbitmq` as a key. The value of `rabbitmq` is an object with following keys:
+- **username** [string] (mandatory) RabbitMQ connection username
+- **password** [string] (mandatory) RabbitMQ connection password
+- **host** [string] (mandatory) RabbitMQ host
+- **port** [string] (mandatory) RabbitMQ port
+- **heartbeats** [string] (mandatory) [heartbeats](https://www.rabbitmq.com/heartbeats.html) defines after what period of time the peer TCP connection should be considered unreachable.
+- **clusterNodes** [Array] (mandatory) - List of [RMQ cluster](https://www.rabbitmq.com/clustering.html#node-names) hosts.
+- **enableRabbitmq** [integer] (optional) 0 if local usage.
+- **switchHostAfterSec** [integer] (optional) Wait time before switching RMQ host.
+- **connectionTimeoutSec** [integer] (optional) Wait time for connection to establish.
 
 Following snippet initializes PLG Works Queue Manager:
+
 ```js
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
+const Queue = require('@plgworks/queue');
 
 // Config Strategy for PLG Works Queue.
 configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "enableRabbitmq": 1
+	'rabbitmq': {
+        'username': 'guest',
+        'password': 'guest',
+        'host': '127.0.0.1',
+        'port': '5672',
+        'heartbeats': '30',
+        'enableRabbitmq': 1
     }
 };
 
 // Create instance
-const queueManagerInstance = await QueueManager.getInstance(configStrategy);
+const queueManager = await Queue.getInstance(configStrategy);
 ```
 
-## queueManagerInstance Object Methods
-- `queueManagerInstance.subscribeEvent.rabbit(topics, options, readCallback, subscribeCallback)`
+## queueManager object methods
+- `queueManager.subscribeEvent.rabbit(topics, options, readCallback, subscribeCallback)`
 <br>Description: Subscribe to multiple topics over a queue.
 <br>Parameters:
-  - <b>topics</b> [Array] (mandatory) - List of events to subscribe to.
-  - <b>options</b> [object] (mandatory) Object with following keys:
-    - <b>queue</b> [string] (optional) - Name of the queue on which you want to receive all your subscribed events. These queues and events, published in them, have TTL of 6 days. If a queue name is not passed, a queue with a unique name is created and is deleted when the subscriber gets disconnected.
-    - <b>ackRequired</b> [integer] (optional) - The delivered message needs ack if passed 1 ( default 0 ). if 1 passed and ack not done, message will redeliver.
-    - <b>broadcastSubscription</b> [integer] (optional) -  Set to 1, when queue needs to be subscribed to broadcasting events.
-    - <b>prefetch</b> [integer] (optional) - The number of messages released from queue in parallel. In case of ackRequired=1, queue will pause unless delivered messages are acknowledged.
-  - <b>readCallback</b> [function] (mandatory) - Callback method will be invoked whenever there is a new notification.
-  - <b>subscribeCallback</b> [function] (optional) - Callback method to return consumerTag.
+  - **topics** [Array] (mandatory) - Array of topics to subscribe to.
+  - **options** [object] (mandatory) Object with following keys:
+    - **queue** [string] (optional) - Name of the queue on which messages with relevant topics will be published. If not passed, a queue with a unique name is created and is deleted when the subscriber gets disconnected.
+    - **ackRequired** [integer] (optional) - The delivered message needs ack if passed 1 ( default 0 ). if 1 passed and ack not done, message will redeliver.
+    - **broadcastSubscription** [integer] (optional) -  Set to 1, when queue needs to be subscribed to broadcasting events. Default 0.
+    - **prefetch** [integer] (optional) - The number of messages released from queue in parallel. In case of ackRequired=1, queue will pause unless delivered messages are acknowledged. Default 1.
+  - **readCallback** [function] (mandatory) - Callback method will be invoked whenever there is a new notification.
+  - **subscribeCallback** [function] (optional) - Callback method to get consumerTag.
 
-- `queueManagerInstance.publishEvent.perform(params)`
+- `queueManager.publishEvent.perform(params)`
 <br>Description: Publish event to topics.
 <br>Parameters:
-  - <b>params</b> [object] (mandatory) Object with following keys:
-    - <b>topics</b> [Array] (optional) List of topic messages to publish.
-    - <b>broadcast</b> [integer] (optional) When set to 1 message will be broadcasted to all channels. Default value is 0.
-    - <b>publishAfter</b> [integer] (optional) Message to be sent after milliseconds.
-    - <b>publisher</b> [string] (mandatory) Name of publisher
-    - <b>message</b> [object] (mandatory) Object with following keys:
-      - <b>kind</b> [string] (mandatory) Kind of the message.
-      - <b>payload</b> [object] (optional) Payload to identify message and extra info.
+  - **params** [object] (mandatory) Object with following keys:
+    - **topics** [Array] (mandatory) Array of topics to which message to be publish.
+    - **broadcast** [integer] (optional) Set to 1 for broadcasting. Default 0.
+    - **publishAfter** [integer] (optional) Delay in milli-seconds between publish and being available for consumption. Default 0.
+    - **publisher** [string] (mandatory) Name of publisher
+    - **message** [object] (mandatory) Object with following keys:
+      - **kind** [string] (mandatory) Kind of the message.
+      - **payload** [object] (mandatory) Payload to identify message and extra info.
 
 ## Examples
 
-### Subscribe to events published through RabbitMQ
-  
+### Subscribe
+Following snippet subscribes to specific topics over a queue.
+
 ```js
+const Queue = require('@plgworks/queue');
+
 // Config Strategy for PLG Works Queue.
 configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "enableRabbitmq": 1
+	'rabbitmq': {
+        'username': 'guest',
+        'password': 'guest',
+        'host': '127.0.0.1',
+        'port': '5672',
+        'heartbeats': '30',
+        'enableRabbitmq': 1
     }
 };
 
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
 let unAckCount = 0; // Number of unacknowledged messages.
 
-const subscribe = async function() {
-  let queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  queueManagerInstance.subscribeEvent.rabbit(
-    ["event.PublicTestEvent"], // List of events
-    {
-      queue: 'testQueue',
-      ackRequired: 1, // When set to 1, all delivered messages MUST get acknowledge.
-      broadcastSubscription: 1, // When set to 1, it will subscribe to broadcast channel and receive all broadcasted messages. 
-      prefetch:10
-    }, 
-    function(msgContent){
-      // Please make sure to return promise in callback function. 
-      // On resolving the promise, the message will get acknowledged.
-      // On rejecting the promise, the message will be re-queued (noAck)
-      return new Promise(async function(onResolve, onReject) {
-        // Incrementing unacknowledged message count.
-        unAckCount++;
-        console.log('Consumed message -> ', msgContent);
-        response = await processMessage(msgContent);
-        
-        // Complete the task and in the end of all tasks done
-        if(response == success){
-          // The message MUST be acknowledged here.
-          // To acknowledge the message, call onResolve
-          // Decrementing unacknowledged message count.
-          unAckCount--;
-          onResolve();   
-        } else {
-          //in case of failure to requeue same message.
-          onReject();
-        }
-       
-      })
-    
-    });
+const topics = ["topic.testTopic"];
+
+const options = {
+  queue: 'testQueue',
+  ackRequired: 1, // When set to 1, all delivered messages MUST get acknowledge.
+  broadcastSubscription: 1, // When set to 1, it will subscribe to broadcast channel and receive all broadcast messages. 
+  prefetch:10
 };
+
+const processMessage = function(msgContent) {
+  // Process message code here.
+  // msgContent is the message string, which needs to be JSON parsed to get message object.
+};
+
+const readCallback = function(msgContent) {
+  // Please make sure to return promise in callback function. 
+  // On resolving the promise, the message will get acknowledged.
+  // On rejecting the promise, the message will be re-queued (noAck)
+  return new Promise(async function(onResolve, onReject) {
+    // Incrementing unacknowledged message count.
+    unAckCount++;
+
+    // Process the message. Following is a 
+    response = await processMessage(msgContent);
+  
+    // Complete the task and in the end of all tasks done
+    if(response == success){
+      // The message MUST be acknowledged here.
+      // To acknowledge the message, call onResolve
+      // Decrementing unacknowledged message count.
+      unAckCount--;
+      onResolve();   
+    } else {
+      //in case of failure to requeue same message.
+      onReject();
+    }
+  })    
+};
+
+const subscription = {}; // object to store the consumer tag
+const subscribeCallback = function(consumerTag) {
+  subscription.consumerTag = consumerTag;
+};
+
+const subscribe = async function() {
+  const queueManager = await Queue.getInstance(configStrategy);
+  queueManager.subscribeEvent.rabbit(
+    topics, // List of topics
+    options,
+    readCallback,
+    subscribeCallback
+   );
+};
+
 // Gracefully handle SIGINT, SIGTERM signals.
 // Once SIGINT/SIGTERM signal is received, programme will stop consuming new messages. 
 // But, the current process MUST handle unacknowledged queued messages.
 process.on('SIGINT', function () {
+  // Stop the consumption of messages
+  process.emit('CANCEL_CONSUME', subscription.consumerTag);
+
   console.log('Received SIGINT, checking unAckCount.');
   const f = function(){
     if (unAckCount === 0) {
@@ -141,6 +165,7 @@ process.on('SIGINT', function () {
       setTimeout(f, 1000);
     }
   };
+  // Wait for open tasks to be done.
   setTimeout(f, 1000);
 });
 
@@ -150,121 +175,109 @@ function rmqError(err) {
 }
 // Event published from package in case of internal error.
 process.on('rmq_error', rmqError);
+
 subscribe();
 ```
 
-### Listen to multiple events with one subscriber
+### Publish
+
+Following snippet publishes a task for specific topics.
 
 ```js
 // Config Strategy for PLG Works Queue.
 configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "enableRabbitmq": 1
+	'rabbitmq': {
+        'username': 'guest',
+        'password': 'guest',
+        'host': '127.0.0.1',
+        'port': '5672',
+        'heartbeats': '30',
+        'enableRabbitmq': 1
     }
 };
 
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
-const subscribeMultiple = async function() {
-  let queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  queueManagerInstance.subscribeEvent.rabbit(
-    ["event.PublicTestEvent1", "event.PublicTestEvent2"],
-    {}, 
-    function(msgContent){
-      console.log('Consumed message -> ', msgContent)
-    });
-  };
-subscribeMultiple();
-```
+const topics = ["topic.testTopic"];
 
-### Publish Notifications
-
-All events are by default published using EventEmitter and if configured, through RabbitMQ as well.
-
-```js
-// Config Strategy for PLG Works Queue.
-configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "connectionTimeoutSec": "60",
-        "enableRabbitmq": 1
-    }
+const message = {
+   kind: 'testMessageKind',
+   payload: {
+      // Custom payload for message
+   }
 };
 
 // Import the Queue module.
-const QueueManager = require('@plgworks/queue');
+const Queue = require('@plgworks/queue');
 const publish = async function() {
-  let queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  queueManagerInstance.publishEvent.perform(
+  const queueManager = await Queue.getInstance(configStrategy);
+  queueManager.publishEvent.perform(
     {
-      topics:["event.PublishTestEvent"],
-      broadcast: 1, // When set to 1 message will be broadcasted to all channels.
-      publishAfter: 1000, // message to be sent after milliseconds.
+      topics: topics,
       publisher: 'MyPublisher',
-      message: {
-  	    kind: "event_received",
-  	    payload: {
-  		   // Custom payload for message
-  	    }
-  	  }
+      publishAfter: 30*1000, // delay in milli-seconds
+      message: message
     });
 };
+
 publish();
 ```
 
-### Pause and Restart queue consumption
+### Publish with delay
 
-We also support pause and start queue consumption. According to your logical condition, you can fire below events 
-from your process to pause or restart consumption respectively. Pausing consumption can be the first step in SIGINT handling.
+In some use cases, it is required to process certain task with a delay. For example, after one hour of user sign-up, we need to send an email.
+Such tasks can be published by using the `publishAfter` parameter. Internally, we use [dead letter exchange](https://www.rabbitmq.com/dlx.html) for achieving this functionality.
+
+**Important Note**: Do not use arbitrary values of delays. Internally, the message is stored in a delay specific queue for the waiting duration. As the number of allowed delays increases, so do the number of waiting queues. Having too many queues, can hamper RabbitMQ performance.
 
 ```js
-
 // Config Strategy for PLG Works Queue.
-let configStrategy = {
-	"rabbitmq": {
-        "username": "guest",
-        "password": "guest",
-        "host": "127.0.0.1",
-        "port": "5672",
-        "heartbeats": "30",
-        "enableRabbitmq": 1
+configStrategy = {
+	'rabbitmq': {
+        'username': 'guest',
+        'password': 'guest',
+        'host': '127.0.0.1',
+        'port': '5672',
+        'heartbeats': '30',
+        'enableRabbitmq': 1
     }
 };
 
-let queueConsumerTag = null;
-// Import the queue module.
-const QueueManager = require('@plgworks/queue');
-const subscribePauseRestartConsume = async function() {
-  let queueManagerInstance = await QueueManager.getInstance(configStrategy);
-  queueManagerInstance.subscribeEvent.rabbit(
-      ["event.PublicTestEvent1", "event.PublicTestEvent2"],
-      {}, 
-      function(msgContent){
-        console.log('Consumed message -> ', msgContent);
-        
-        if(some_failure_condition){
-          process.emit('CANCEL_CONSUME', queueConsumerTag);
-        }
-        
-        if(failure_resolve_detected){
-          process.emit('RESUME_CONSUME', queueConsumerTag);
-        }
-      },
-      function(consumerTag) {
-        queueConsumerTag = consumerTag;
-      }
-    );
-  };
-subscribePauseRestartConsume();
+const topics = ["topic.testTopic"];
+
+const message = {
+   kind: 'testMessageKind',
+   payload: {
+      // Custom payload for message
+   }
+};
+
+// Import the Queue module.
+const Queue = require('@plgworks/queue');
+const publish = async function() {
+  const queueManager = await Queue.getInstance(configStrategy);
+  queueManager.publishEvent.perform(
+    {
+      topics: topics,
+      publisher: 'MyPublisher',
+      message: message
+    });
+};
+
+publish();
+```
+
+### Cancel and Resume message consumption
+
+As seen in the subscribe snippet, cancelling consumption is the first step in SIGINT handling. For cancelling the consumption,
+consumerTag is needed, which is obtained in subscribeCallback. See subscribe snippet above for more details.
+
+For cancelling the consumption, emit `CANCEL_CONSUME` event with consumerTag info.
+```js
+process.emit('CANCEL_CONSUME', consumerTag);
+```
+
+For resuming the consumption, emit `RESUME_CONSUME` event with consumerTag info.
+```js
+process.emit('RESUME_CONSUME', consumerTag);
 ```
 
 ## Running test cases
