@@ -4,12 +4,12 @@
  * @module services/subscribeEvent
  */
 
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 
 const rootPrefix = '..',
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/services/rmqSubscribe/topic');
 require(rootPrefix + '/services/rmqSubscribe/all');

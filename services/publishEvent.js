@@ -4,12 +4,12 @@
  * @module services/publishEvent
  */
 
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 
 const rootPrefix = '..',
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/services/rmqPublish/topic');
 require(rootPrefix + '/services/rmqPublish/all');

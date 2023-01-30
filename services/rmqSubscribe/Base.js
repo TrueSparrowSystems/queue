@@ -4,7 +4,7 @@
  * @module services/rmqSubscribe/Base
  */
 
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 const { v4: uuidV4 } = require('uuid');
 
 const rootPrefix = '../..',
@@ -13,7 +13,7 @@ const rootPrefix = '../..',
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/lib/rabbitmq/connection');
 
