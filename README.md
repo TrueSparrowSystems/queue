@@ -1,8 +1,8 @@
 # Queue
 
-![npm version](https://img.shields.io/npm/v/@plgworks/queue.svg?style=flat)
+![npm version](https://img.shields.io/npm/v/@truesparrow/queue.svg?style=flat)
 
-PLG Works Queue helps in publishing and subscribing tasks over [RabbitMQ](https://www.rabbitmq.com/). Internally it uses topic-based exchange.
+True Sparrow Queue helps in publishing and subscribing tasks over [RabbitMQ](https://www.rabbitmq.com/). Internally it uses topic-based exchange.
 
 One use-case is to publish tasks for asynchronous processing. For example, **API worker process** can publish tasks which will be taken up by **asynchronous worker processes** which have subscribed for such tasks.
 
@@ -12,11 +12,11 @@ One use-case is to publish tasks for asynchronous processing. For example, **API
 ## Install
 
 ```bash
-npm install @plgworks/queue --save
+npm install @truesparrow/queue --save
 ```
 
 ## Initialize
-`configStrategy` is passed to initialize PLG Works Queue. `configStrategy` is an object with `rabbitmq` as a key. The value of `rabbitmq` is an object with following keys:
+`configStrategy` is passed to initialize True Sparrow Queue. `configStrategy` is an object with `rabbitmq` as a key. The value of `rabbitmq` is an object with following keys:
 - **username** [string] (mandatory) RabbitMQ connection username
 - **password** [string] (mandatory) RabbitMQ connection password
 - **host** [string] (mandatory) RabbitMQ host
@@ -27,12 +27,12 @@ npm install @plgworks/queue --save
 - **switchHostAfterSec** [integer] (optional) Wait time before switching RMQ host.
 - **connectionTimeoutSec** [integer] (optional) Wait time for connection to establish.
 
-Following snippet initializes PLG Works Queue Manager:
+Following snippet initializes True Sparrow Queue Manager:
 
 ```js
-const Queue = require('@plgworks/queue');
+const Queue = require('@truesparrow/queue');
 
-// Config Strategy for PLG Works Queue.
+// Config Strategy for True Sparrow Queue.
 configStrategy = {
 	'rabbitmq': {
         'username': 'guest',
@@ -79,9 +79,9 @@ const queueManager = await Queue.getInstance(configStrategy);
 Following snippet subscribes to specific topics over a queue.
 
 ```js
-const Queue = require('@plgworks/queue');
+const Queue = require('@truesparrow/queue');
 
-// Config Strategy for PLG Works Queue.
+// Config Strategy for True Sparrow Queue.
 configStrategy = {
 	'rabbitmq': {
         'username': 'guest',
@@ -184,7 +184,7 @@ subscribe();
 Following snippet publishes a task for specific topics.
 
 ```js
-// Config Strategy for PLG Works Queue.
+// Config Strategy for True Sparrow Queue.
 configStrategy = {
 	'rabbitmq': {
         'username': 'guest',
@@ -206,7 +206,7 @@ const message = {
 };
 
 // Import the Queue module.
-const Queue = require('@plgworks/queue');
+const Queue = require('@truesparrow/queue');
 const publish = async function() {
   const queueManager = await Queue.getInstance(configStrategy);
   queueManager.publishEvent.perform(
@@ -229,7 +229,7 @@ Such tasks can be published by using the `publishAfter` parameter. Internally, w
 **Important Note**: Do not use arbitrary values of delays. Internally, the message is stored in a delay specific queue for the waiting duration. As the number of allowed delays increases, so do the number of waiting queues. Having too many queues, can hamper RabbitMQ performance.
 
 ```js
-// Config Strategy for PLG Works Queue.
+// Config Strategy for True Sparrow Queue.
 configStrategy = {
 	'rabbitmq': {
         'username': 'guest',
@@ -251,7 +251,7 @@ const message = {
 };
 
 // Import the Queue module.
-const Queue = require('@plgworks/queue');
+const Queue = require('@truesparrow/queue');
 const publish = async function() {
   const queueManager = await Queue.getInstance(configStrategy);
   queueManager.publishEvent.perform(

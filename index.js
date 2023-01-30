@@ -1,11 +1,11 @@
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
   rabbitmqHelper = require(rootPrefix + '/lib/rabbitmq/helper'),
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/lib/rabbitmq/helper');
 require(rootPrefix + '/lib/rabbitmq/connection');

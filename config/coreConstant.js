@@ -19,7 +19,7 @@ class CoreConstants {
    * @returns {string}
    */
   get icNameSpace() {
-    return 'PLGWorksQueue';
+    return 'Queue';
   }
 
   /**

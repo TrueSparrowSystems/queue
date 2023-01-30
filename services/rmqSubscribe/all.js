@@ -4,13 +4,13 @@
  * @module services/rmqSubscribe/all
  */
 
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 
 const rootPrefix = '../..',
   SubscriptionBase = require(rootPrefix + '/services/rmqSubscribe/Base'),
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/lib/rabbitmq/connection');
 
