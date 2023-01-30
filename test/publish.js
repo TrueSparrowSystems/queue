@@ -4,7 +4,7 @@ const chai = require('chai'),
 
 // Load queue manager service
 const rootPrefix = '..',
-  PLGWorksQueue = require(rootPrefix + '/index'),
+  Queue = require(rootPrefix + '/index'),
   configStrategy = require(rootPrefix + '/test/configStrategy.json');
 
 require(rootPrefix + '/lib/rabbitmq/connection');
@@ -25,7 +25,7 @@ const getParams = function() {
 };
 
 // Create connection.
-const queueManagerInstance = PLGWorksQueue.getInstance(configStrategy);
+const queueManagerInstance = Queue.getInstance(configStrategy);
 
 describe('Publishing to rabbitMq', async function() {
   it('should return promise', async function() {

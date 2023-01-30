@@ -4,7 +4,7 @@
  * @module services/rmqPublish/all
  */
 
-const PLGWorksBase = require('@plgworks/base');
+const Base = require('@truesparrow/base');
 
 const rootPrefix = '../..',
   apiErrorConfig = require(rootPrefix + '/config/apiErrorConfig'),
@@ -12,7 +12,7 @@ const rootPrefix = '../..',
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   coreConstant = require(rootPrefix + '/config/coreConstant');
 
-const InstanceComposer = PLGWorksBase.InstanceComposer;
+const InstanceComposer = Base.InstanceComposer;
 
 require(rootPrefix + '/lib/rabbitmq/connection');
 

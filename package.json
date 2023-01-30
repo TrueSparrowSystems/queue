@@ -1,6 +1,6 @@
 {
-  "name": "@plgworks/queue",
-  "version": "1.0.1",
+  "name": "@truesparrow/queue",
+  "version": "2.0.0",
   "description": "Queue helps publish critical events using EventEmitter and RabbitMQ.",
   "main": "index.js",
   "scripts": {
@@ -9,22 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PLG-Works/queue.git"
+    "url": "https://github.com/TrueSparrowSystems/queue.git"
   },
   "keywords": [
-    "PLG Works Queue",
+    "True Sparrow Queue",
     "Event Emitter",
     "RabbitMQ",
     "PubSub"
   ],
-  "author": "PLG Works",
+  "author": "True Sparrow",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PLG-Works/queue/issues"
+    "url": "https://github.com/TrueSparrowSystems/queue/issues"
   },
-  "homepage": "https://github.com/PLG-Works/queue#readme",
+  "homepage": "https://github.com/TrueSparrowSystems/queue#readme",
   "dependencies": {
-    "@plgworks/base": "1.0.0",
+    "@truesparrow/base": "2.0.0",
     "amqplib": "0.8.0",
     "uuid": "8.3.2"
   },
