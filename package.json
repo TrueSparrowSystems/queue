@@ -26,7 +26,7 @@
   "dependencies": {
     "@truesparrow/base": "2.0.0",
     "amqplib": "0.8.0",
-    "uuid": "8.3.2"
+    "uuid": "14.0.0"
   },
   "devDependencies": {
     "chai": "4.3.0",
